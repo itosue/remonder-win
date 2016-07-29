@@ -8,7 +8,7 @@ auto remote rendering script for blender (only for windows)
 
 #### 実行について！  
 PowerShellを利用しています。  
-　実行権限の変更などが良く分からない方は、コマンドラインからremonder.ps1のある場所へ移動し、下記のコマンドを実行して起動してください。  
+　実行権限の変更などが良く分からない方は、コマンドラインからremonder.ps1のある場所へ移動し、下記のコマンドをコピペして実行して起動してください。（バックスラッシュを半角￥マークに置き換えて実行して下さい）  
 powershell -NoProfile -ExecutionPolicy Unrestricted .\remonder.ps1  
 　当初は起動用バッチファイルを付けていましたが、SmartScreenなどの警告表示が激しいのでやめました。必要に応じてバッチファイル化するなどしてください。
 
