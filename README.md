@@ -1,15 +1,16 @@
 # remonder
-auto remote rendering scripts for blender (only for windows)  
+auto remote rendering script for blender (only for windows)  
 
 クラウドストレージ（デフォルトはGoogleDrive）経由でリモートにあるWindowsマシンでレンダリングするスクリプトです。  
 ・出先のノートPCからパワフルなデスクトップマシンなどでレンダリングできる  
 ・所定のフォルダにコピーをして保存するだけで、別マシンにレンダリングキューを投げられる  
 ・デスクトップマシンなどの熱や音を気にせず快適な場所で作業できる  
 
-###### はじめに！  
+###### 実行について！  
 PowerShellを利用しています。  
-ダウンロードしてきたファイルを実行できるようにしてください。  
-よくわからない人は.batも一緒にダウンロードしてスクリプトと同じ場所に置いてそれから実行してください。  
+　実行権限の変更などが良く分からない方は、コマンドラインからremonder.ps1のある場所へ移動し、下記のコマンドを実行して起動してください。  
+powershell -NoProfile -ExecutionPolicy Unrestricted .\remonder.ps1  
+　当初は起動用バッチファイルを付けていましたが、SmartScreenなどの警告表示が激しいのでやめました。必要に応じてバッチファイル化するなどしてください。
 
 PowerShellの実行権限については下記の記事などを参考にして下さい。  
 Powershellを楽に実行してもらうには  http://qiita.com/tomoko523/items/df8e384d32a377381ef9
