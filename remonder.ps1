@@ -22,27 +22,43 @@ $outDir = ${baseDir} + "\03_output"
 
 # 標準ではエラー出力を抑制しています。挙動がおかしい時とかデバッグする時はこの項目を"Continue"等、他のオプションにしてみてください。
 $ErrorActionPreference = "SilentlyContinue"
+#$ErrorActionPreference = "Continue"
+
+# GIFアニメーション化する際のデフォルトの色数
+$defcolornum = 256
+
+# GIFアニメーションを自動減色する際の目標ファイルサイズ
+$fileSizeLimit = 3145728
+#$fileSizeLimit = 3145
+
+# その他初期値
+$answer = "y"
+$twgif = "y"
 
 # 以下処理本体
-$answer = y
-$twgif = y
 $answer = read-host 現在の作業ディレクトリは[${baseDir}]です。そのまま処理しますか？[y/n] #環境が安定して自動でyを選択する時は、この行頭に#を付けてコメントアウトして下さい。
 if(${answer} -match "y|Y"){
 	echo (${GDDir} + "で処理を開始します。")
 	$twgif = read-host Twitterに投稿する用のGIFアニを追加で作りますか？※別途ImageMagickのインストールが必要です[y/n] #環境が安定して自動でyを選択する時は、この行頭に#を付けてコメントアウトして下さい。
 	if(${twgif} -match "y|Y"){
 		echo "Twitter用GIFアニファイルを作成します。"
+
+		$colornum = [int](read-host 色数を整数で指定してください。※デフォルトの色数で処理する時はそのままEnter)
+		if(${colornum} -match "\d."){
+			echo ("色数"+${colornum}+"で処理します。")
+			${colornum}.GetType().FullName
+			$defcolornum = ${colornum}
+		}else{
+			echo ('デフォルトの色数（' + ${defcolornum} + '）で処理します。')
+						$colornum = ${defcolornum}
+		}
 	}else{
 		echo "Twitter用GIFアニファイルは作成しません。"
-		$twgif = n
+		$twgif = "n"
 	}
-	$colornum = read-host 色数を整数で指定してください。
-	if(${colornum} -match "\d."){
-		echo ("色数"+${colornum}+"で処理します。")
-	}else{
-		echo "デフォルトの式数（32）で処理します。"
-		$colornum = 32
-	}
+
+echo ""
+
 }elseif(${answer} -match "n|N"){
 	echo "ディレクトリ設定を書き換えてください。プログラムを終了します"
 	exit
@@ -97,26 +113,38 @@ while(1){
 		if($?){
 			$projName = (Get-ChildItem ${workDir}\${renderFile}).BaseName
 			$datetime = Get-Date -F "yyMMddHHmmss"
-			mkdir ${outDir}\${datetime}-${projName}
 			echo (".blendファイルを検知しました。レンダリングを開始します。 " + ${renderFile})
-			& $blCMD -b ${workDir}\${renderFile} -o ${outDir}\${projName}-${datetime}\${projName}_ -F PNG -a
+			& ${blCMD} -b ${workDir}\${renderFile} -o ${outDir}\${projName}-${datetime}\${projName}_ -F PNG -a
 			if($?){
 				echo ""
 				echo "レンダリング完了"
+				mv ${workDir}\${renderFile} ${outDir}\${projName}-${datetime}
+
+				# アニメーションGIFの作成
 				if(${twgif} -match "y|Y"){
+					echo ""
 					echo "GIFアニファイル作成開始"
 					magick -dispose none -delay 2 -loop 0 ${outDir}\${projName}-${datetime}\*.png -alpha Set -depth 8 -layers optimizeplus  -colors ${colornum} ${outDir}\${projName}-${datetime}\${projName}.gif
 					if($?){
-						echo "GIFアニファイル作成完了"
+						$gifSize = $(Get-ChildItem "${outDir}\${projName}-${datetime}\${projName}.gif").Length
+						while(${gifSize} -gt ${fileSizeLimit}){
+							$colornum = [math]::floor(${colornum} * ${fileSizeLimit} / ${gifSize})
+							echo ("ファイルサイズオーバー " + ${gifSize} + "/" + ${fileSizeLimit} + " " + ${colornum} + "色に減色します。")
+							magick -dispose none -delay 2 -loop 0 ${outDir}\${projName}-${datetime}\*.png -alpha Set -depth 8 -layers optimizeplus  -colors ${colornum} ${outDir}\${projName}-${datetime}\${projName}.gif
+							$gifSize = $(Get-ChildItem "${outDir}\${projName}-${datetime}\${projName}.gif").Length
+						}
+						echo ("GIFアニファイル作成完了 " + ${gifSize} + "/" + ${fileSizeLimit} + " " + ${colornum} + "色")
 					}else{
 						echo "GIFアニファイル作成中にエラーが発生しました。処理を中断します。"
 						exit 1
 					}
 				}
-				mv ${workDir}\${renderFile} ${outDir}\${projName}-${datetime}
+
+				$colornum = ${defcolornum}
 				echo ""
 				echo "次のファイルを待機しています..."
-				echo "Ctrl+Cでストップします。"			}else{
+				echo "Ctrl+Cでストップします。"
+			}else{
 				echo "レンダリングコマンドでエラーが発生しました。処理を中断します。"
 				exit 1
 			}
