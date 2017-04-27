@@ -46,7 +46,7 @@ if(${silent} -match "y|Y"){
 	echo (${GDDir} + "で処理を開始します。")
 	echo ("Twitter用GIFアニファイル出力 y/n?=" + ${twgif} + " 色数=" + ${colornum})
 
-}else
+}else{
 	$answer = read-host 現在の作業ディレクトリは[${baseDir}]です。そのまま処理しますか？[y/n] #環境が安定して自動でyを選択する時は、この行頭に#を付けてコメントアウトして下さい。
 
 	if(${answer} -match "y|Y"){
