@@ -1,3 +1,8 @@
+Param(
+    [switch]${s}  # サイレント処理
+    )
+
+
 # Blenderがインストールされている場所
 $blCMD = "C:\Program Files\Blender Foundation\Blender\blender.exe"
 
@@ -35,37 +40,48 @@ $fileSizeLimit = 3145728
 $answer = "y"
 $twgif = "y"
 
+
 # 以下処理本体
-$answer = read-host 現在の作業ディレクトリは[${baseDir}]です。そのまま処理しますか？[y/n] #環境が安定して自動でyを選択する時は、この行頭に#を付けてコメントアウトして下さい。
-if(${answer} -match "y|Y"){
+if(${s}){
+	$colornum = ${defcolornum}
+	echo ("サイレントオプションが指定されました。全てデフォルトの値で処理します。")
 	echo (${GDDir} + "で処理を開始します。")
-	$twgif = read-host Twitterに投稿する用のGIFアニを追加で作りますか？※別途ImageMagickのインストールが必要です[y/n] #環境が安定して自動でyを選択する時は、この行頭に#を付けてコメントアウトして下さい。
-	if(${twgif} -match "y|Y"){
-		echo "Twitter用GIFアニファイルを作成します。"
+	echo ("Twitter用GIFアニファイル出力 y/n?=" + ${twgif} + " 色数=" + ${colornum})
 
-		$colornum = [int](read-host 色数を整数で指定してください。※デフォルトの色数で処理する時はそのままEnter)
-		if(${colornum} -match "\d."){
-			echo ("色数"+${colornum}+"で処理します。")
-			${colornum}.GetType().FullName
-			$defcolornum = ${colornum}
-		}else{
-			echo ('デフォルトの色数（' + ${defcolornum} + '）で処理します。')
-						$colornum = ${defcolornum}
-		}
-	}else{
-		echo "Twitter用GIFアニファイルは作成しません。"
-		$twgif = "n"
-	}
-
-echo ""
-
-}elseif(${answer} -match "n|N"){
-	echo "ディレクトリ設定を書き換えてください。プログラムを終了します"
-	exit
 }else{
-	echo "天邪鬼さんは知りません。"
-	echo "プログラムを終了します。"
-	exit
+	$answer = read-host 現在の作業ディレクトリは[${baseDir}]です。そのまま処理しますか？[y/n] #環境が安定して自動でyを選択する時は、この行頭に#を付けてコメントアウトして下さい。
+
+	if(${answer} -match "y|Y"){
+		echo (${GDDir} + "で処理を開始します。")
+		$twgif = read-host Twitterに投稿する用のGIFアニを追加で作りますか？※別途ImageMagickのインストールが必要です[y/n] #環境が安定して自動でyを選択する時は、この行頭に#を付けてコメントアウトして下さい。
+
+		if(${twgif} -match "y|Y"){
+			echo "Twitter用GIFアニファイルを作成します。"
+			$colornum = [int](read-host 色数を整数で指定してください。※デフォルトの色数で処理する時はそのままEnter)
+
+			if(${colornum} -match "\d."){
+				echo ("色数"+${colornum}+"で処理します。")
+				${colornum}.GetType().FullName
+				$defcolornum = ${colornum}
+			}else{
+				echo ('デフォルトの色数（' + ${defcolornum} + '）で処理します。')
+							$colornum = ${defcolornum}
+			}
+		}else{
+			echo "Twitter用GIFアニファイルは作成しません。"
+			$twgif = "n"
+		}
+
+	echo ""
+
+	}elseif(${answer} -match "n|N"){
+		echo "ディレクトリ設定を書き換えてください。プログラムを終了します"
+		exit
+	}else{
+		echo "天邪鬼さんは知りません。"
+		echo "プログラムを終了します。"
+		exit
+	}
 }
 
 if(Test-Path ${baseDir}){
