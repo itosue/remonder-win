@@ -17,9 +17,10 @@ PowerShellの実行権限については下記の記事などを参考にして�
 Powershellを楽に実行してもらうには  http://qiita.com/tomoko523/items/df8e384d32a377381ef9
 
 -s(silent)のオプションを付けて起動するとファイル内のデフォルト値で起動するようにしました。  
-起動する際に質問されないため、スタートアップに追加して自動で起動するようにしておくと便利です。  
 下記のように起動して下さい。  
-D:\\>powershell ".\remonder.ps1 -s"
+D:\\>powershell ".\remonder.ps1 -s"  
+起動する際に質問されないため、下記のようなショートカットをスタートアップに追加して自動で起動するようにしておくと便利です。  
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy RemoteSigned -File "D:\path\to\file\remonder.ps1" -s
 
 #### つかいかた！  
 　実行するとデフォルトではGoogleDriveのディレクトリ直下にremonderというベースディレクトリを作り、その下に各種作業用ディレクトリを作成します。居ないと思いますが、同名のディレクトリを使ってる方は別のベースディレクトリなどに書き換えて使って下さい。  
