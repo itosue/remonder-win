@@ -1,3 +1,8 @@
+Param(
+    [switch]${s}  # サイレント処理
+    )
+
+
 # Blenderがインストールされている場所
 $blCMD = "C:\Program Files\Blender Foundation\Blender\blender.exe"
 
@@ -35,14 +40,11 @@ $fileSizeLimit = 3145728
 $answer = "y"
 $twgif = "y"
 
-Param(
-    [string]${silent}  # サイレント処理　y/n
-    )
 
 # 以下処理本体
-if(${silent} -match "y|Y"){
+if(${s}){
 	$colornum = ${defcolornum}
-	echo (サイレントオプションが指定されました。全てデフォルトの値で処理します。)
+	echo ("サイレントオプションが指定されました。全てデフォルトの値で処理します。")
 	echo (${GDDir} + "で処理を開始します。")
 	echo ("Twitter用GIFアニファイル出力 y/n?=" + ${twgif} + " 色数=" + ${colornum})
 
