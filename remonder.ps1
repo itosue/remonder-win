@@ -1,125 +1,114 @@
 Param(
-    [switch]${s}  # サイレント処理
+    [switch]${s}
     )
 
+# Path to cloud strage directory
+$GDDir = "C:\Users\" + ${user} + "\Google Drive"
 
-# Blenderがインストールされている場所
-$blCMD = "C:\Program Files\Blender Foundation\Blender\blender.exe"
-
-# ログインしているユーザー名
-$user = Get-Content env:username
-
-# GoogleDriveに使われているディレクトリ（OneDrive等、サービスに応じて変えて下さい
-$GDDir = "C:\Users\" + ${user} + "\Google ドライブ"
-
-# ベースとなる場所
+# base directory
 $baseDir = ${GDDir} + "\remonder"
 
-# Blendファイルを置く場所
+# directory where to put .blned file
 $inDir = ${baseDir} + "\01_que"
 
-# 作業中のプロジェクトファイルを置く場所
 $workDir = ${baseDir} + "\02_work"
 
-# 各種ファイルが出力される場所
 $outDir = ${baseDir} + "\03_output"
 
 
-# 標準ではエラー出力を抑制しています。挙動がおかしい時とかデバッグする時はこの項目を"Continue"等、他のオプションにしてみてください。
+# By default, error output is supressed. Change option to Continue if you need debug.
 $ErrorActionPreference = "SilentlyContinue"
 #$ErrorActionPreference = "Continue"
 
-# GIFアニメーション化する際のデフォルトの色数
+# default colors for GIF animation.
 $defcolornum = 256
 
-# GIFアニメーションを自動減色する際の目標ファイルサイズ
+# target file size for GIF animation. (default is for twitter)
 $fileSizeLimit = 3145728
-#$fileSizeLimit = 3145
 
-# その他初期値
+# other default value
 $answer = "y"
 $twgif = "y"
 
 
-# 以下処理本体
+# main routine
 if(${s}){
 	$colornum = ${defcolornum}
-	echo ("サイレントオプションが指定されました。全てデフォルトの値で処理します。")
-	echo (${GDDir} + "で処理を開始します。")
-	echo ("Twitter用GIFアニファイル出力 y/n?=" + ${twgif} + " 色数=" + ${colornum})
+	echo ("Silent option is detected. Execute with settings below.")
+	echo ("Base cloud storage directory is" + ${GDDir})
+	echo ("Create GIF animation too? y/n?=" + ${twgif} + " colors=" + ${colornum})
 
 }else{
-	$answer = read-host 現在の作業ディレクトリは[${baseDir}]です。そのまま処理しますか？[y/n] #環境が安定して自動でyを選択する時は、この行頭に#を付けてコメントアウトして下さい。
+	$answer = read-host Base directori is [${baseDir}]. OK?[y/n]
 
 	if(${answer} -match "y|Y"){
-		echo (${GDDir} + "で処理を開始します。")
-		$twgif = read-host Twitterに投稿する用のGIFアニを追加で作りますか？※別途ImageMagickのインストールが必要です[y/n] #環境が安定して自動でyを選択する時は、この行頭に#を付けてコメントアウトして下さい。
+		echo (”Start processing in directory" + ${GDDir} )
+		$twgif = read-host Create GIF animation too? (need to install ImageMagick)[y/n]
 
 		if(${twgif} -match "y|Y"){
-			echo "Twitter用GIFアニファイルを作成します。"
-			$colornum = [int](read-host 色数を整数で指定してください。※デフォルトの色数で処理する時はそのままEnter)
+			echo "Create GIF animation."
+			$colornum = [int](read-host Enter number of colors. Press enter if you want process with default number $defcolornum)
 
 			if(${colornum} -match "\d."){
-				echo ("色数"+${colornum}+"で処理します。")
+				echo ("Create GIF animation with "+${colornum}+" colors")
 				${colornum}.GetType().FullName
 				$defcolornum = ${colornum}
 			}else{
-				echo ('デフォルトの色数（' + ${defcolornum} + '）で処理します。')
+				echo ('Create with (' + ${defcolornum} + ')colors')
 							$colornum = ${defcolornum}
 			}
 		}else{
-			echo "Twitter用GIFアニファイルは作成しません。"
+			echo "Won't create GIF animation."
 			$twgif = "n"
 		}
 
 	echo ""
 
 	}elseif(${answer} -match "n|N"){
-		echo "ディレクトリ設定を書き換えてください。プログラムを終了します"
+		echo "Please specify your desired cloud storage directory."
 		exit
 	}else{
-		echo "天邪鬼さんは知りません。"
-		echo "プログラムを終了します。"
+		echo "Please enter y/n stop application."
 		exit
 	}
 }
 
 if(Test-Path ${baseDir}){
-	echo "baseディレクトリがすでに存在するので、作成をスキップします。"
+	echo "Base directory is already existing. Skip creating directory."
 }else{
-	echo "baseディレクトリを作成します。"
+	echo "Create base directory."
 	mkdir ${baseDir}
 }
 
 if(Test-Path ${inDir}){
-	echo "queディレクトリが既に存在するので、作成をスキップします。"
+	echo "Que directory is already existing. Skipping."
 }else{
 	echo ""
-	echo "queディレクトリを作成します。"
+	echo "Create que directory."
 	mkdir ${inDir}
 }
 
 if(Test-Path ${workDir}){
-	echo "workディレクトリが既に存在するので、作成をスキップします。"
+	echo "Work directory is already existing. Skipping."
 }else{
 	echo ""
-	echo "workディレクトリを作成します。"
+	echo "Create work directory."
 	mkdir ${workDir}
 }
 
 if(Test-Path ${outDir}){
-	echo "outputディレクトリが既に存在するので、作成をスキップします。"
+	echo "Output directory is already existing. Skipping."
 }else{
 	echo ""
-	echo "outputディレクトリを作成します。"
+	echo "Create output directory."
 	mkdir ${outDir}
 }
 
-echo "ディレクトリの作成が完了しました。"
+echo "Directorys has been created."
 
 echo ""
-echo ".blendファイルがqueディレクトリに置かれるのを待機しています..."
-echo "Ctrl+Cでストップします。"
+echo "Waiting for .blend file is placed in que directory..."
+echo "Press Ctrl+C to stop waiting."
 
 while(1){
 
@@ -129,39 +118,39 @@ while(1){
 		if($?){
 			$projName = (Get-ChildItem ${workDir}\${renderFile}).BaseName
 			$datetime = Get-Date -F "yyMMddHHmmss"
-			echo (".blendファイルを検知しました。レンダリングを開始します。 " + ${renderFile})
+			echo (".blend file is detected. Start rendering. " + ${renderFile})
 			& ${blCMD} -b ${workDir}\${renderFile} -o ${outDir}\${projName}-${datetime}\${projName}_ -F PNG -a
 			if($?){
 				echo ""
-				echo "レンダリング完了"
+				echo "Render finished!"
 				mv ${workDir}\${renderFile} ${outDir}\${projName}-${datetime}
 
-				# アニメーションGIFの作成
+				# Creating GIF animation part
 				if(${twgif} -match "y|Y"){
 					echo ""
-					echo "GIFアニファイル作成開始"
+					echo "Creating GIF animation..."
 					magick -dispose none -delay 2 -loop 0 ${outDir}\${projName}-${datetime}\*.png -alpha Set -depth 8 -layers optimizeplus  -colors ${colornum} ${outDir}\${projName}-${datetime}\${projName}.gif
 					if($?){
 						$gifSize = $(Get-ChildItem "${outDir}\${projName}-${datetime}\${projName}.gif").Length
 						while(${gifSize} -gt ${fileSizeLimit}){
 							$colornum = [math]::floor(${colornum} * ${fileSizeLimit} / ${gifSize})
-							echo ("ファイルサイズオーバー " + ${gifSize} + "/" + ${fileSizeLimit} + " " + ${colornum} + "色に減色します。")
+							echo ("File size exceeded.. " + ${gifSize} + "/" + ${fileSizeLimit} + " Try again with " + ${colornum} + " colors.")
 							magick -dispose none -delay 2 -loop 0 ${outDir}\${projName}-${datetime}\*.png -alpha Set -depth 8 -layers optimizeplus  -colors ${colornum} ${outDir}\${projName}-${datetime}\${projName}.gif
 							$gifSize = $(Get-ChildItem "${outDir}\${projName}-${datetime}\${projName}.gif").Length
 						}
-						echo ("GIFアニファイル作成完了 " + ${gifSize} + "/" + ${fileSizeLimit} + " " + ${colornum} + "色")
+						echo ("Creating GIF animation finished! " + ${gifSize} + "/" + ${fileSizeLimit} + " " + ${colornum} + "colors")
 					}else{
-						echo "GIFアニファイル作成中にエラーが発生しました。処理を中断します。"
+						echo "Some error has occurred during creating GIF animation. Stop application."
 						exit 1
 					}
 				}
 
 				$colornum = ${defcolornum}
 				echo ""
-				echo "次のファイルを待機しています..."
-				echo "Ctrl+Cでストップします。"
+				echo "Waiting for next file..."
+				echo "Press Ctrl+C to stop waiting."
 			}else{
-				echo "レンダリングコマンドでエラーが発生しました。処理を中断します。"
+				echo "Some error has occurred during rendering. Stop application."
 				exit 1
 			}
 		}

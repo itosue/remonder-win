@@ -1,39 +1,38 @@
 # remonder
 auto remote rendering script for blender (only for windows)  
 
-クラウドストレージ（デフォルトはGoogleDrive）経由でリモートにあるWindowsマシンでレンダリングするスクリプトです。起動時の設定によって自動でGIFアニメーションも同時に作成できます。  
-・出先のノートPCやごろ寝ノートPCからパワフルなデスクトップマシンなどでレンダリングできる  
-・所定のフォルダにコピーをして保存するだけで、別マシンにレンダリングキューを投げられる  
-・デスクトップマシンなどの熱や音を気にせず快適な場所で作業できる  
-・PowerShellで書いてあるので、アニバーサリーアップデート対象外のWin7などでも動きます。  
+You can render scene via cloud storage(it uses GoogleDrive by default) with remote windows PC. GIF animation creation option is also available.  
+・You can render with powerful desktop PC from mobile PC even at outside, cafe or bedroom...  
+・Easy to use. Just save copy to the que folder.  
+・You never bother with heat and noise from desktop PC. Work anywhere you want with power of your big PC.  
+・This PowerShell script runs on most of windows PC without installing other software.  
 
-#### 実行について！  
-PowerShellを利用しています。  
-　実行権限の変更などが良く分からない方は、コマンドラインからremonder.ps1のある場所へ移動し、下記のコマンドをコピペして実行して起動してください。（バックスラッシュを半角￥マークに置き換えて実行して下さい）  
+#### Before you start...  
+This is PowerShell script so you need some trick to execute downloaded script.  
+Execute script written in below to make script executable.  
 powershell -NoProfile -ExecutionPolicy Unrestricted .\remonder.ps1  
-　当初は起動用バッチファイルを付けていましたが、SmartScreenなどの警告表示が激しいのでやめました。必要に応じてバッチファイル化するなどしてください。
+Makeing batch file to start script if you want.(You need to handle SmartScreen in some environment.)
 
-PowerShellの実行権限については下記の記事などを参考にして下さい。  
-Powershellを楽に実行してもらうには  http://qiita.com/tomoko523/items/df8e384d32a377381ef9
+I don't write how to execute PowerShell downloaded from internet. Please google it.  
+This info might help... https://blogs.msdn.microsoft.com/powershell/2007/05/05/running-scripts-downloaded-from-the-internet/
 
--s(silent)のオプションを付けて起動するとファイル内のデフォルト値で起動するようにしました。  
-下記のように起動して下さい。  
+
+#### How to use  
+　Once you run this script, it automatically creates Directory called "remonder" and other work folders. Please change base directory name if you need.  
+
+01_que : Put .blend file here. Automatically start rendering from oldest file. Don't forget pack the textures and images.(Checking [File]->[External Data]->[Automatically Pack Into .blend] make it easy.) This script run on only windows but you can put .blend file from any other platforms(Mac,Linux,FreeBSD and so on).  
+02_work : Once file is detected in que directory, .blend file is moved to this directory. Some garbage are left when you interrupt script. Please clean up manually when you want.  
+03_output : The directory named with "projectname-yymmddhhmmss" will be created and PNG image sequence are saved here. Project file and GIF file are also moved here.  
+
+By setting silent option "-s", this script runs with default values written in script file.  
+ex)  
 D:\\>powershell ".\remonder.ps1 -s"  
-起動する際に質問されないため、下記のようなショートカットをスタートアップに追加して自動で起動するようにしておくと便利です。  
+Add shortcut to start up might be convenient. The shortcut is like below.  
 C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy RemoteSigned -File "D:\path\to\file\remonder.ps1" -s
 
-#### つかいかた！  
-　実行するとデフォルトではGoogleDriveのディレクトリ直下にremonderというベースディレクトリを作り、その下に各種作業用ディレクトリを作成します。居ないと思いますが、同名のディレクトリを使ってる方は別のベースディレクトリなどに書き換えて使って下さい。  
+Set start frame and end frame and save copy to que directory.　Set same frame number if you want render single frame.
 
-01_que・・・ここに.blendファイルを置くと古いものから順にレンダリングが開始されます（別途テクスチャや背景に画像ファイルが必要な場合はパックしておいて下さい[ファイル]→[外部データ]→[すべて.blendにパック]）レンダリングはWindowsマシンですが、このフォルダに置く.blendファイルの作成はMac・Linux（多分FreeBSDも）でも構いません。  
-02_work・・・レンダリング中のファイルはこちらに移動されます。中断などするとゴミがたまります。特に動作に影響はないですが、気になる方は掃除して下さい。  
-03_output・・・このディレクトリの下にプロジェクト名-yymmddhhmmss
-のルールでディレクトリが作成され、その中にPNGの連番ファイルが出力されます。レンダリングが完了したプロジェクトファイルもここに移動されます。  
-
-
-　作業しているBlenderのプロジェクトのアニメーションの範囲を指定し、ファイル→コピーを保存などを使って上記queディレクトリへファイルを置きます。静止画をレンダリングしたい時は開始と終了フレームを同一にしてください。（全てアニメーションとして処理しているので、1フレームのアニメーションを処理させるイメージです。）
-
-#### そのほか！  
-・ベースディレクトリはデフォルトでGoogleDriveの標準ディレクトリ直下になっていますが、スクリプト内のディレクトリを変更することで、OneDriveなどでも利用可能です。  
-・アニメーションなどでレンダリングが長引いて中断したい時、Ctrl+Cが効きません。Windowごと閉じて下さい。この時、workフォルダにファイルが残ってしまいます。そのままでも動きますが、気になる方は適宜掃除して下さい。その後、スクリプト自体を再起動してください。  
-・中断した時など、queディレクトリへ再度プロジェクトファイルを戻す時、読み込んでくれなかったり同期エラーが出たりする場合があります。（GoogleDriveのキャッシュの問題？）暫く待つか、ファイル名を変更すると処理が始まります。同様に、「コピーして保存」でキューディレクトリに放り込んだ時もレンダリングが始まらない場合があります。ファイル名にテイク数など適当な番号を付けると認識しやすいです。
+#### other tips  
+- By default, base directory is for GoogleDrive. You can change the directory by changing directory in the script file.  
+- You can't stop script with Ctrl+C after rendering is started. Please close the window that script is runnning to kill.   
+- Change file name(add sequencial number is fine) every time you save to que directory. It take long time to detect changes. (Caused by GoogleDrive??)
