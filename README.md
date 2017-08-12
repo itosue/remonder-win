@@ -9,9 +9,9 @@ You can render scene through cloud storage(it uses GoogleDrive by default) with 
 ・This PowerShell script runs on most of windows PC without installing other software.  
 
 #### Before you start...  
-This is most tough part. To run PowerShell script which downloaded from internet, you need some trick to execute.  
-Execute script written in below to make script executable.  
-powershell -NoProfile -ExecutionPolicy Unrestricted .\remonder.ps1  
+This is most tough part. You need some steps to run PowerShell script which downloaded from internet.  
+Execute script written in below make script executable.  
+` powershell -NoProfile -ExecutionPolicy Unrestricted .\remonder.ps1`   
 Make batch file to start script if you want.(You need to handle SmartScreen in some environment.)
 
 It's depentds on your environment to run script so please google for more information.  
