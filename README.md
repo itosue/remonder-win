@@ -29,7 +29,7 @@ By setting silent option "-s", this script runs with default values written in s
 ex)  
 D:\\>powershell ".\remonder.ps1 -s"  
 Add shortcut to start up might be convenient. The shortcut is like below.  
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy RemoteSigned -File "D:\path\to\file\remonder.ps1" -s
+` C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy RemoteSigned -File "D:\path\to\file\remonder.ps1" -s` 
 
 Set start frame and end frame and save copy to que directory.　Set same frame number if you want render single frame.
 
