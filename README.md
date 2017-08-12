@@ -1,19 +1,20 @@
 # remonder
 auto remote rendering script for blender (only for windows)  
 
-You can render scene via cloud storage(it uses GoogleDrive by default) with remote windows PC. GIF animation creation option is also available.  
-・You can render with powerful desktop PC from mobile PC even at outside, cafe or bedroom...  
-・Easy to use. Just save copy to the que folder.  
+You can render scene through cloud storage(it uses GoogleDrive by default) with remote windows PC. GIF animation creation option is also available.  
+・You can render with your powerful desktop PC from mobile PC even at outside, cafe or couch etc...  
+・You don't need server. It just use client PC you usually use.  
+・Easy to use. Just save copy to the que folder. (Setup is little tricky)  
 ・You never bother with heat and noise from desktop PC. Work anywhere you want with power of your big PC.  
 ・This PowerShell script runs on most of windows PC without installing other software.  
 
 #### Before you start...  
-This is PowerShell script so you need some trick to execute downloaded script.  
+This is most tough part. To run PowerShell script which downloaded from internet, you need some trick to execute.  
 Execute script written in below to make script executable.  
 powershell -NoProfile -ExecutionPolicy Unrestricted .\remonder.ps1  
-Makeing batch file to start script if you want.(You need to handle SmartScreen in some environment.)
+Make batch file to start script if you want.(You need to handle SmartScreen in some environment.)
 
-I don't write how to execute PowerShell downloaded from internet. Please google it.  
+It's depentds on your environment to run script so please google for more information.  
 This info might help... https://blogs.msdn.microsoft.com/powershell/2007/05/05/running-scripts-downloaded-from-the-internet/
 
 

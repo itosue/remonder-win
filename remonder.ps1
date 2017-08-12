@@ -2,6 +2,12 @@ Param(
     [switch]${s}
     )
 
+# Blender program path
+$blCMD = "C:\Program Files\Blender Foundation\Blender\blender.exe"
+
+# Get current user name
+$user = Get-Content env:username
+
 # Path to cloud strage directory
 $GDDir = "C:\Users\" + ${user} + "\Google Drive"
 
@@ -35,19 +41,19 @@ $twgif = "y"
 if(${s}){
 	$colornum = ${defcolornum}
 	echo ("Silent option is detected. Execute with settings below.")
-	echo ("Base cloud storage directory is" + ${GDDir})
+	echo ("Base cloud storage directory is " + ${GDDir})
 	echo ("Create GIF animation too? y/n?=" + ${twgif} + " colors=" + ${colornum})
 
 }else{
-	$answer = read-host Base directori is [${baseDir}]. OK?[y/n]
+	$answer = read-host "Base directori is [${baseDir}]. OK?[y/n]"
 
 	if(${answer} -match "y|Y"){
-		echo (ÅhStart processing in directory" + ${GDDir} )
-		$twgif = read-host Create GIF animation too? (need to install ImageMagick)[y/n]
+		echo ("Start processing at directory " + ${GDDir} )
+		$twgif = read-host "Create GIF animation too? You need ImageMagick to use this function. [y/n]"
 
 		if(${twgif} -match "y|Y"){
 			echo "Create GIF animation."
-			$colornum = [int](read-host Enter number of colors. Press enter if you want process with default number $defcolornum)
+			$colornum = [int](read-host "Enter number of colors. Press enter if you want process with default number ${defcolornum}")
 
 			if(${colornum} -match "\d."){
 				echo ("Create GIF animation with "+${colornum}+" colors")
